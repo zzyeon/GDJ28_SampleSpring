@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- TastDao.java랑 어떻게 이어지는지 알겠지? return sqlSession.selectList("test.getMem"); -->
+<mapper namespace="test">
+	<select id="getMem" parameterType="hashmap" resultType="hashmap"> <!-- resultType="hashmap" : 데이터를 해쉬맵 형태로 보내겠다. -->
+		SELECT M.MEMNO, M.MEMNAME
+		FROM (SELECT MEMNO, MEMNAME,
+		ROW_NUMBER()
+		OVER(ORDER BY MEMNO DESC) AS RNUM
+		FROM MEM
+		WHERE 1 = 1
+		<if test="searchTxt != null and searchTxt != ''">
+			<choose>
+				<when test="searchGbn == 0">
+					AND MEMNO LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn == 1">
+					AND MEMNAME LIKE '%' || #{searchTxt} || '%'
+				</when>
+			</choose>
+		</if>
+		) M
+		WHERE M.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<select id="getB" parameterType="hashmap" resultType="hashmap">
+		SELECT B_NO, B_TITLE, B_WRITER, B_DT
+		FROM (SELECT B_NO, B_TITLE, B_WRITER,
+		TO_CHAR(B_DT,'YY.MM.DD') AS B_DT,
+		ROW_NUMBER() OVER(ORDER BY B_NO DESC) AS RNUM
+		FROM B
+		WHERE 1 = 1
+		<if test="searchTxt != null and searchTxt != ''">
+			<choose>
+				<when test="searchGbn == 0">
+					AND B_NO LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn == 1">
+					AND B_TITLE LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn == 2">
+					AND B_WRITER LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn == 3">
+					AND B_DT LIKE '%' || #{searchTxt} || '%'
+				</when>
+			</choose>
+		</if>
+		) B
+		WHERE B.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+
+	<!-- id : 메소드명, parameterType : 인자, resultType : 반환값 -->
+	<select id="getMemDetail" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MEMNO, MEMNAME, TO_CHAR(MEMBIRTH, 'YYYY-MM-DD') AS MEMBIRTH,
+		MEMPHONE
+		FROM MEM
+		WHERE MEMNO = #{memno}
+		<!-- 받아오는 값은 #{} 안에 쓰면된다. 대소문자 구별하고, hashmap일 때는 키 값을, String이나 int일 때에는 
+			변수명을 적으면된다. -->
+	</select>
+
+	<select id="getBDetail" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT B_NO, B_TITLE, B_CON, B_WRITER,
+		TO_CHAR(B_DT,'YY.MM.DD') AS B_DT
+		FROM B
+		WHERE B_NO = #{b_no}
+		ORDER BY
+		B_NO DESC
+	</select>
+
+	<insert id="addMem" parameterType="hashmap"> <!-- 반환값이 없다. 그냥 삽입만 하는 것이지 뷰를 보여주는 것은 아니다. -->
+		INSERT INTO MEM(MEMNO, MEMNAME, MEMBIRTH, MEMPHONE)
+		VALUES(MEM_SEQ.NEXTVAL, #{memname}, #{membirth}, #{memphone})
+	</insert>
+
+	<insert id="addB" parameterType="hashmap">
+		INSERT INTO B (B_NO, B_TITLE,
+		B_WRITER, B_CON)
+		VALUES(B_SEQ.NEXTVAL, #{btitle}, #{bwriter}, #{bcon})
+	</insert>
+
+	<update id="updateMem" parameterType="hashmap">
+		UPDATE MEM SET MEMNAME =
+		#{memname},
+		MEMBIRTH = #{membirth},
+		MEMPHONE = #{memphone}
+		WHERE MEMNO =
+		#{memno}
+	</update>
+
+	<update id="updateB" parameterType="hashmap">
+		UPDATE B SET B_TITLE =
+		#{btitle},
+		B_CON = #{bcon},
+		B_WRITER = #{bwriter}
+		WHERE B_NO = #{b_no}
+	</update>
+
+	<delete id="deleteMem" parameterType="hashmap">
+		DELETE FROM MEM
+		WHERE MEMNO
+		= #{memno}
+	</delete>
+
+	<delete id="deleteB" parameterType="hashmap">
+		DELETE FROM B
+		WHERE B_NO =
+		#{b_no}
+	</delete>
+
+	<select id="getMemCnt" parameterType="hashmap"
+		resultType="Integer"> <!-- resultType="Integer" class만 들어갈 수 있기때문에. 자료형은 메소드를 안써줘도된다. -->
+		SELECT COUNT(*) AS CNT
+		FROM MEM
+		WHERE 1 = 1
+		<if test="searchTxt != null and searchTxt != ''">
+			<choose>
+				<when test="searchGbn == 0">
+					AND MEMNO LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn == 1">
+					AND MEMNAME LIKE '%' || #{searchTxt} || '%'
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="getBCnt" parameterType="hashmap"
+		resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM B
+		WHERE 1 = 1
+		<if test="searchTxt != null and searchTxt != ''">
+			<choose>
+				<when test="searchGbn == 0">
+					AND B_NO LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn == 1">
+					AND B_TITLE LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn == 2">
+					AND B_WRITER LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn == 3">
+					AND B_DT LIKE '%' || #{searchTxt} || '%'
+				</when>
+			</choose>
+		</if>
+	</select>
+</mapper>

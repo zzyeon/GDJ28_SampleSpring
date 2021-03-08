@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="book">
+
+	<select id="getBookCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM BOOK
+		WHERE 1 = 1 <!-- 모두 검색하는 조건 주고 그 다음에 IF 주기 -->
+		<if test="searchTxt != null and searchTxt != ''">
+			<choose>
+				<when test="searchGbn eq 0">
+					AND BT LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn eq 1">
+					AND BW LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn eq 2">
+					AND BO LIKE '%' || #{searchTxt} || '%'
+				</when>
+			</choose>
+		</if>
+	</select>
+
+	<select id="getBookList" parameterType="hashmap" resultType="hashmap">
+	SELECT B.BNO, B.BT, B.BW, B.BO
+	FROM (SELECT BNO, BT, BW, BO, TO_CHAR(BD,'YYYY-MM-DD') AS BD , TO_CHAR(BU,'YYYY-MM-DD') AS BU, 
+		ROW_NUMBER() OVER(ORDER BY BNO DESC) AS RNUM
+		  FROM BOOK 
+		  WHERE 1 = 1
+	<if test="searchTxt != null and searchTxt != ''">
+			<choose>
+				<when test="searchGbn eq 0">
+					AND BT LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn eq 1">
+					AND BW LIKE '%' || #{searchTxt} || '%'
+				</when>
+				<when test="searchGbn eq 2">
+					AND BO LIKE '%' || #{searchTxt} || '%'
+				</when>
+			</choose>
+		</if>
+		 )B
+	WHERE B.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	<select id="getBookDetail" parameterType="hashmap" resultType="hashmap">
+		SELECT BNO, BT, BW, BO, TO_CHAR(BD,'YYYY-MM-DD') AS BD , TO_CHAR(BU,'YYYY-MM-DD') AS BU
+		FROM BOOK
+		WHERE BNO = #{bno}
+	</select>
+	
+	<insert id="addBook" parameterType="hashmap"> 
+		INSERT INTO BOOK(BNO, BT, BW, BO, BD)
+		VALUES(BOOK_SEQ.NEXTVAL, #{bt}, #{bw}, #{bo}, #{bd})
+	</insert>
+	
+	<update id="updateBook" parameterType="hashmap">
+	UPDATE BOOK SET 
+		BT = #{bt},
+		BW = #{bw},
+        BO = #{bo},
+        BD = #{bd}
+		WHERE BNO = #{bno}
+	
+	</update>
+	
+	<delete id="deleteBook" parameterType="hashmap">
+		DELETE FROM BOOK
+		WHERE BNO = #{bno}
+	</delete>
+</mapper>
+

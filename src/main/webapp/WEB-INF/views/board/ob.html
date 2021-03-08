@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>한줄게시판</title>
+<style type="text/css">
+body {
+	margin: 0px;
+	font-size: 0pt;
+}
+
+.login_wrap {
+	text-align: right;
+	padding: 10px;
+}
+
+.ob_wrap {
+	width: 800px;
+	margin: 0px auto;
+	border: 1px solid #444444;
+}
+
+.write_area {
+	height: 100px;
+}
+
+.user_info {
+	display: inline-table;
+	width: 100px;
+	height: 100px;
+	vertical-align: top;
+}
+
+.user_name {
+	display: table-cell;
+	width: 100px;
+	height: 100px;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 12pt;
+}
+
+.write_con_wrap {
+	display: inline-block;
+	width: 550px;
+	height: 100px;
+	vertical-align: top;
+}
+
+.write_con {
+	width: 540px;
+	height: 90px;
+	resize: none;
+	margin: 2px;
+}
+
+.btn_wrap {
+	display: inline-block;
+	width: 150px;
+	height: 100px;
+	vertical-align: top;
+}
+
+.action_btn {
+	width: 146px;
+	height: 96px;
+	margin: 2px;
+}
+
+.action2_btn {
+	width: 71px;
+	height: 96px;
+	margin: 2px;
+}
+
+.login_req_wrap {
+	display: inline-table;
+	width: 800px;
+	height: 100px;
+}
+
+.login_req {
+	display: table-cell;
+	width: 800px;
+	height: 100px;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 12pt;
+}
+
+.data_req_wrap {
+	display: inline-table;
+	width: 800px;
+	height: 100px;
+	border-top : 1px solid #444444;
+	margin-bottom: 5px;
+}
+
+.data_req {
+	display: table-cell;
+	width: 800px;
+	height: 100px;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 12pt;
+}
+
+.ob_data {
+	border-top : 1px solid #444444;
+	margin-bottom: 5px;
+}
+
+.con_info {
+	display: inline-table;
+	width: 550px;
+	height: 100px;
+	vertical-align: top;
+}
+
+.con {
+	display: table-cell;
+	width: 100px;
+	height: 100px;
+	vertical-align: middle;
+	text-align: left;
+	font-size: 12pt;
+}
+
+.paging_wrap {
+	margin: 5px 0px;
+	padding: 5px 0px;
+	border-top: 1px solid #444444;
+	text-align: center;
+}
+
+.paging_wrap span {
+	margin: 0px 5px;
+	font-size: 12pt;
+	cursor: pointer;
+}
+</style>
+</head>
+<body>
+<div class="login_wrap">
+	<!-- 로그인 시 -->
+	<!-- 
+	홍길동님 어서오십시오.<input type="button" value="로그아웃" />
+	-->
+	
+	<!-- 비 로그인 시 -->
+	<input type="button" value="로그인" />
+</div>
+<div class="ob_wrap">
+	<!-- Write -->
+	<div class="write_area">
+		<!-- 로그인 시 추가 -->
+		<div class="user_info">
+			<div class="user_name">홍길동</div>
+		</div>
+		<div class="write_con_wrap">
+			<textarea class="write_con"></textarea>
+		</div>
+		<div class="btn_wrap">
+			<input type="button" value="저장" class="action_btn" />
+		</div>
+		
+		<!-- 비 로그인 시 -->
+		<!-- 
+		<div class="login_req_wrap">
+			<div class="login_req">작성 시 로그인이 필요합니다. <input type="button" value="로그인" /></div>
+		</div>
+		 -->
+	</div>
+	<!-- List -->
+	<div class="ob_list_wrap">
+		<!-- 데이터 없을 시 -->
+		<!-- 
+		<div class="data_req_wrap">
+			<div class="data_req">데이터가 없습니다.</div>
+		</div>
+		 -->
+		<div class="ob_data">
+			<div class="user_info">
+				<div class="user_name">홍길동</div>
+			</div>
+			<div class="con_info">
+				<div class="con">가나다라마바사아자차카타파하<br/>가나다라마바사아자차카타파하<br/>가나다라마바사아자차카타파하<br/>가나다라마바사아자차카타파하<br/>가나다라마바사아자차카타파하<br/>가나다라마바사아자차카타파하<br/>가나다라마바사아자차카타파하<br/>가나다라마바사아자차카타파하<br/></div>
+			</div>
+			<div class="btn_wrap">
+				<input type="button" value="수정" class="action2_btn" />
+				<input type="button" value="삭제" class="action2_btn" />
+			</div>
+		</div>
+		<div class="ob_data">
+			<div class="user_info">
+				<div class="user_name">김철수</div>
+			</div>
+			<div class="con_info">
+				<div class="con">가나다라마바사아자차카타파하</div>
+			</div>
+			<div class="btn_wrap">
+				본인것만 버튼 생성
+				<!-- <input type="button" value="수정" class="action_btn" /> -->
+			</div>
+		</div>
+	</div>
+	<!-- Paging -->
+	<div class="paging_wrap">
+		<span>이전</span>
+		<span><b>1</b></span>
+		<span>2</span>
+		<span>다음</span>
+	</div>
+</div>
+</body>
+</html>

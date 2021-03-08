@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="oboard">
+<select id="getBoardCnt" parameterType="hashmap" resultType="Integer">
+		SELECT COUNT(*) AS CNT
+		FROM OBOARD O INNER JOIN MEMBERS M
+		                     ON O.MNO = M.MNO
+		WHERE O.OB_DEL = 0
+	</select>
+	
+	<select id="getBoardList" parameterType="hashmap" resultType="hashmap">
+		SELECT OB_NO, B.MNM, OB_CON 
+		FROM (  SELECT O.OB_NO, O.MNO, O.OB_CON, 
+		               TO_CHAR(O.OB_DT, 'YYYY-MM-DD') AS OB_DT, M.MNM,
+		               ROW_NUMBER() OVER(ORDER BY O.OB_NO DESC) AS RNUM
+		        FROM OBOARD O INNER JOIN MEMBERS M
+		                             ON O.MNO = M.MNO
+		        WHERE O.OB_DEL = 0
+		     ) B
+		WHERE B.RNUM BETWEEN #{startCnt} AND #{endCnt}
+	</select>
+	
+	<insert id="boardAdd" parameterType="hashmap">
+		INSERT INTO OBOARD(OB_NO, MNO, OB_CON)
+		VALUES(OBOARD_SEQ.NEXTVAL, #{mno}, #{obcon})
+	</insert>
+	
+	<select id="getBoard" parameterType="hashmap" resultType="hashmap">
+		SELECT O.OB_NO, O.MNO, O.OB_CON,
+		       TO_CHAR(O.OB_DT, 'YYYY-MM-DD') AS OB_DT, M.MNO, M.MNM
+		FROM OBOARD O INNER JOIN MEMBERS M
+		                     ON O.MNO = M.MNO
+		WHERE O.OB_NO = #{obNo}
+	</select>
+	
+	<update id="boardUpdate" parameterType="hashmap">
+		UPDATE OBOARD SET OB_CON = #{obcon},
+			   OB_DT = SYSDATE				 
+		WHERE OB_NO = #{obNo}
+	</update>
+	
+	<update id="boardDelete" parameterType="hashmap">
+		UPDATE OBOARD SET OB_DEL = 1
+		WHERE OB_NO = #{obNo}
+	</update>
+</mapper>
+
+
+
+
+
+
+
